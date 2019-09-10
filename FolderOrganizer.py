@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+import pathlib
 import json
 import configparser
 import sys
@@ -46,7 +47,8 @@ def decidePath(movie_format_names, custom_format_mappings):
     return custom_format_mappings[DEFAULT_MAPPING]
 
 def getCurrentPath(movie_info):
-    return movie_info[PATH]
+    path = pathlib.Path(movie_info[PATH])
+    return str(path.parent)
 
 
 ########################################################################################################################
@@ -99,8 +101,13 @@ moviesWithFile = filter(lambda e: e.get("movieFile") is not None, radarrMovies.j
 
 for movie in moviesWithFile:
     movie_format_names = getCustomFormatNames(movie)
-    path = decidePath(movie_format_names, custom_format_mappings)
-    logger.debug("Movie {} should go to {}".format(movie["title"], path))
+    correct_path = decidePath(movie_format_names, custom_format_mappings)
+    current_path = getCurrentPath(movie)
+    if current_path not in custom_format_mappings.values():
+        logger.error("Current path {} from movie {} is not in the configuration file. Skipping to avoid possible errors".format(current_path, movie["title"]))
+        continue
+    logger.debug("Movie {} should go to {}".format(movie["title"], correct_path))
+    # logger.debug("Movie {} is in {}".format(movie["title"], current_path))
 
     # movieRecords = list(group)
     # # Not enough information so pointless to continue (at least we need one grabbed and one imported event)

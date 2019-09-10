@@ -49,6 +49,8 @@ def decidePath(movie_format_names, custom_format_mappings):
 def getCurrentPath(movie_info):
     path = pathlib.Path(movie_info[PATH])
     return str(path.parent)
+def moveMovie(movie_info, current_path, correct_path):
+    logger.debug("Movie {} should go to {}".format(movie["title"], correct_path))
 
 
 ########################################################################################################################
@@ -106,41 +108,7 @@ for movie in moviesWithFile:
     if current_path not in custom_format_mappings.values():
         logger.error("Current path {} from movie {} is not in the configuration file. Skipping to avoid possible errors".format(current_path, movie["title"]))
         continue
-    logger.debug("Movie {} should go to {}".format(movie["title"], correct_path))
-    # logger.debug("Movie {} is in {}".format(movie["title"], current_path))
-
-    # movieRecords = list(group)
-    # # Not enough information so pointless to continue (at least we need one grabbed and one imported event)
-    # if len(movieRecords) < 2:
-    #     continue
-    # downloadId = ""
-    # grabbedCustomFormats = None
-    # movieRecords.sort(key=lambda e: e["date"], reverse=True)
-    # for movieRecord in movieRecords:
-    #     recordDownloadId = movieRecord.get(DOWNLOAD_ID, "")
-    #     if downloadId:
-    #         if downloadId == recordDownloadId and GRABBED_EVENT_TYPE == movieRecord[EVENT_TYPE]:
-    #             quality = movieRecord.get(QUALITY, {CUSTOM_FORMATS: None})
-    #             grabbedCustomFormats = quality.get(CUSTOM_FORMATS, None)
-    #             break
-    #     elif IMPORTED_EVENT_TYPE == movieRecord[EVENT_TYPE]:
-    #         downloadId = recordDownloadId
-    #         quality = movieRecord.get(QUALITY, {CUSTOM_FORMATS: None})
-    #         currentCustomFormats = quality.get(CUSTOM_FORMATS, None)
-    # if grabbedCustomFormats is not None:
-    #     movieInfo = movieIdInfoMap[movieId]
-    #     currentFile = movieInfo.get("movieFile", None)
-    #     if currentFile is None:
-    #         logger.debug("Movie file not found for movie: {}".format(movieInfo["title"]))
-    #     elif grabbedCustomFormats != currentFile["quality"]["customFormats"]:
-    #         movieFile = movieInfo["movieFile"]
-    #         movieFileId = movieFile["id"]
-    #         movieFile["quality"]["customFormats"] = grabbedCustomFormats
-    #         updateResponse = radarrSession.put('{0}/api/movieFile/{1}?apikey={2}'.format(radarr_url, movieFileId, radarr_key),
-    #                                            data=json.dumps(movieFile))
-    #         if updateResponse.status_code < 300:
-    #             logger.debug("Movie {0} updated succesfully: {1}".format(movieInfo["title"], grabbedCustomFormats))
-    #         else:
-    #             logger.debug("Error while trying to update: {0}".format(movieInfo["title"]))
+    if current_path != correct_path:
+        moveMovie(movie, current_path, correct_path)
 
 

@@ -103,7 +103,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
 
-os.mkdir("./logs")
+os.makedirs("./logs", exist_ok=True)
 fileHandler = logging.FileHandler("./logs/organizer.log")
 fileHandler.setFormatter(logFormatter)
 logger.addHandler(fileHandler)

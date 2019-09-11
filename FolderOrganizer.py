@@ -77,7 +77,7 @@ def change_movie_path_and_folder(movie_info, new_path, new_folder_name):
     old_path = movie_info[PATH]
     movie_info[PATH] = new_path
     movie_info[FOLDER_NAME] = new_folder_name
-    update_response = radarrSession.put('{0}/api/movie/{1}?apikey={2}'.format(radarr_url, movie_id, radarr_key),
+    update_response = radarrSession.put('{0}/api/movie/{1}'.format(radarr_url, movie_id),
                                         data=json.dumps(movie_info))
     if update_response.status_code < 300:
         logger.debug(
@@ -90,7 +90,7 @@ def refresh_movie(movie_info):
     movie_id = movie_info[ID]
     title = movie_info["title"]
     command = {"movieId": movie_id, "name": "refreshMovie"}
-    refresh_response = radarrSession.post("{0}/api/command?apikey={1}".format(radarr_url, radarr_key),
+    refresh_response = radarrSession.post("{0}/api/command".format(radarr_url),
                                           data=json.dumps(command))
     if refresh_response.status_code < 300:
         logger.debug("Movie {} refreshed succesfully".format(title))
@@ -135,14 +135,14 @@ if DEFAULT_MAPPING not in custom_format_mappings:
     sys.exit(0)
 
 radarrSession = requests.Session()
+radarrSession.headers.update({'x-api-key': radarr_key})
 # TODO check if needed
 radarrSession.trust_env = False
-radarrMovies = radarrSession.get('{0}/api/movie?apikey={1}'.format(radarr_url, radarr_key))
+radarrMovies = radarrSession.get('{0}/api/movie'.format(radarr_url))
 if radarrMovies.status_code >= 300:
     logger.error('Movies retrieve returned status code {}'.format(radarrMovies.status_code))
     sys.exit(0)
 
-movies_moved = 0
 for movie in radarrMovies.json():
     movie_format_names = get_custom_format_names(movie)
     correct_path = decide_path(movie_format_names, custom_format_mappings)
@@ -154,6 +154,5 @@ for movie in radarrMovies.json():
         continue
     if current_path != correct_path:
         move_movie(movie, current_path, correct_path)
-        movies_moved += 1
 
-logger.info("Movies moved: {}".format(movies_moved))
+logger.info("Done!!")

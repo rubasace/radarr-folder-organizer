@@ -17,5 +17,7 @@ COPY entrypoint.sh /
 
 RUN chmod 755 /entrypoint.sh && pip install -r requirements.txt
 
+VOLUME "/logs"
+
 CMD [ "/entrypoint.sh" ]
 

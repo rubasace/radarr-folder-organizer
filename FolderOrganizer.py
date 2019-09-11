@@ -49,8 +49,11 @@ def decidePath(movie_format_names, custom_format_mappings):
 def getCurrentPath(movie_info):
     path = pathlib.Path(movie_info[PATH])
     return str(path.parent)
+
 def moveMovie(movie_info, current_path, correct_path):
-    logger.debug("Movie {} should go to {}".format(movie["title"], correct_path))
+    from_folder = movie_info[PATH]
+    to_folder = from_folder.replace(current_path, correct_path)
+    logger.debug("Movie {} is in {} but should go to {}".format(movie_info["title"], from_folder, to_folder))
 
 
 ########################################################################################################################
@@ -66,9 +69,6 @@ consoleHandler = logging.StreamHandler(sys.stdout)
 consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
 ########################################################################################################################
-
-print(os.environ)
-
 
 logger.debug('CustomFormatSync Version {}'.format(VER))
 
@@ -106,7 +106,7 @@ for movie in moviesWithFile:
     correct_path = decidePath(movie_format_names, custom_format_mappings)
     current_path = getCurrentPath(movie)
     if current_path not in custom_format_mappings.values():
-        logger.error("Current path {} from movie {} is not in the configuration file. Skipping to avoid possible errors".format(current_path, movie["title"]))
+        logger.warn("Current path {} from movie {} is not in the configuration file. Skipping to avoid possible errors".format(current_path, movie["title"]))
         continue
     if current_path != correct_path:
         moveMovie(movie, current_path, correct_path)

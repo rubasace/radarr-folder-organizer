@@ -6,8 +6,8 @@
 Radarr Folder Organizer assignes folders to movies given their custom formats, moving the files to the desired folder and updating Radarr to reflect such changes.
 
 ## Why?
-Radarr custom formats are very useful for use cases such as downloading a movie in original version as soon as it's available but upgrading it once a Dual version is released.
-Radarr doesn't support the assignment of alternative folders for custom formats. This script solves that, checking the custom formats of each downloaded movie in the Radarr library and changing it's folder to the desired one.available
+Radarr custom formats are very useful for use cases such as downloading a movie in original version as soon as it's available and upgrading it once a Dual version is released.
+Radarr doesn't support the assignment of alternative folders for custom formats. This script solves that, checking the custom formats of each downloaded movie in the Radarr library and changing it's folder to the desired one.
 
 ## Configuration
 ### Example Config.txt:

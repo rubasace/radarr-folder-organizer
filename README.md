@@ -1,0 +1,1 @@
+[![](https://images.microbadger.com/badges/image/rubasace/radarr-folder-organizer.svg)](https://microbadger.com/images/rubasace/radarr-folder-organizer "Get your own image badge on microbadger.com")

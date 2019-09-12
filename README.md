@@ -48,3 +48,4 @@ docker run -d --name radarr-folder-organizer \
 
 ## Notes
  * Radarr Folder Organizer will try to move your files and abort the movie update if it can't, so it should have access to the movies library files.
+ * When using Docker, be sure that the mounted volume is the same as the Radarr one

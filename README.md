@@ -39,6 +39,7 @@ docker run -d --name radarr-folder-organizer \
         -v /path/to/Config.txt:/Config.txt \
         -v /path/to/logs:/logs \
         -v /your/media/folder:/same/media/folder/as/radarr:shared \
+        -e DELAY=15m \
         rubasace/radarr-folder-organizer
 ```
 ## Requirements

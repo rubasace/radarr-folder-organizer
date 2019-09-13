@@ -58,10 +58,10 @@ def get_current_path(movie_info):
 def move_movie(movie_info, current_path, correct_path):
     title = movie_info["title"]
     old_path = movie_info[PATH]
-    new_path = old_path.replace(current_path, correct_path).rstrip("/")
+    new_path = old_path.replace(current_path, correct_path).rstrip("/\\")
 
     from_folder_name = movie_info[FOLDER_NAME]
-    new_folder_name = from_folder_name.replace(current_path, correct_path).rstrip("/")
+    new_folder_name = from_folder_name.replace(current_path, correct_path).rstrip("/\\")
     try:
         if "movieFile" in movie_info.keys():
             shutil.move(old_path, new_path)

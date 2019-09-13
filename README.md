@@ -2,6 +2,7 @@
 
 [![docker-data](https://images.microbadger.com/badges/image/rubasace/radarr-folder-organizer.svg)](https://microbadger.com/images/rubasace/radarr-folder-organizer "Get your own image badge on microbadger.com")
 
+[![Code Quality](https://api.codacy.com/project/badge/Grade/81401147bff34a15b092ca86f7c0beb9)](https://www.codacy.com/manual/rubasace/radarr-folder-organizer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rubasace/radarr-folder-organizer&amp;utm_campaign=Badge_Grade)
 ## Description
 Radarr Folder Organizer assignes folders to movies given their custom formats, moving the files to the desired folder and updating Radarr to reflect such changes.
 

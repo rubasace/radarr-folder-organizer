@@ -25,10 +25,10 @@ EVENT_TYPE = "eventType"
 
 def config_section_map(section):
     dict1 = {}
-    options = configParser.options(section)
+    options = config_parser.options(section)
     for option in options:
         try:
-            dict1[option] = configParser.get(section, option)
+            dict1[option] = config_parser.get(section, option)
             if dict1[option] == -1:
                 logger.debug("skip: %s" % option)
         except:
@@ -115,8 +115,8 @@ logger.addHandler(consoleHandler)
 
 logger.debug('CustomFormatSync Version {}'.format(VER))
 
-configParser = configparser.ConfigParser()
-configParser.optionxform = str
+config_parser = configparser.ConfigParser()
+config_parser.optionxform = str
 
 # Loads an alternate config file so that I can work on my servers without uploading config to github
 if "DEV" in os.environ:
@@ -124,7 +124,7 @@ if "DEV" in os.environ:
                                                  'Config.txt')
 else:
     settingsFilename = os.path.join(os.getcwd(), 'Config.txt')
-configParser.read(settingsFilename)
+config_parser.read(settingsFilename)
 
 radarr_url = config_section_map("Radarr")['url']
 radarr_key = config_section_map("Radarr")['key']

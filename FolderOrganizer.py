@@ -52,7 +52,12 @@ def decide_path(movie_format_names, custom_format_mappings):
 
 def get_current_path(movie_info):
     path = pathlib.Path(movie_info[PATH])
-    return str(path.parent)
+    return normalize_path(str(path.parent))
+
+
+def normalize_path(path):
+    normpath = os.path.normpath(path)
+    return os.path.normcase(normpath)
 
 
 def move_movie(movie_info, current_path, correct_path):
@@ -129,7 +134,7 @@ config_parser.read(settingsFilename)
 radarr_url = config_section_map("Radarr")['url']
 radarr_key = config_section_map("Radarr")['key']
 
-custom_format_mappings = config_section_map("CustomFormatMappings")
+custom_format_mappings = {key: normalize_path(value) for (key, value) in config_section_map("CustomFormatMappings").items()}
 if DEFAULT_MAPPING not in custom_format_mappings:
     logger.error('A default mapping should be provided!!')
     sys.exit(0)

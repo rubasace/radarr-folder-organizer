@@ -17,9 +17,9 @@ Radarr doesn't support the assignment of alternative folders for custom formats.
 url = http://changeme.com:3333
 key = 4384803r2808rvsvj023r9fjvvd0fjv3
 [CustomFormatMappings]
-__default = /the/default/folder #Default folder if movie doesn't have other custom format especified here (mandatory)
-custom_format1 = /custom/format/1/folder #movies with custom_format1 will go to folder  /custom/format/1/folder
-custom_format2 = /custom/format/2/folder #movies with custom_format2 will go to folder  /custom/format/2/folder
+__default = /the/default/folder 
+custom_format1 = /custom/format/1/folder
+custom_format2 = /custom/format/2/folder
 ```
 ### Configuration steps
  1. Edit the Config.txt file and replace your servers URL and API key for Radarr under the ``[Radarr]`` section.
@@ -33,6 +33,11 @@ Recomended to run using cron every 15 minutes or an interval of your preference.
 pip install -r requirements.txt
 python FolderOrganizer.py
 ```
+If running on Windows and getting the error `ImportError : no module named 'requests'` you'll need to install the requirements via the `python` command.
+```bash
+python -m pip install -r requirements.txt
+python FolderOrganizer.py
+```
 ### Docker
 ```bash
 docker run -d --name radarr-folder-organizer \
@@ -43,6 +48,21 @@ docker run -d --name radarr-folder-organizer \
         -e DELAY=15m \
         rubasace/radarr-folder-organizer
 ```
+## Unknown Folders
+This script will only affect movies that are located in folders explicitly included in the `Config.txt`. In case any movie is found in another folder you'll receive the message `Current path ${Path} from movie ${MovieName} is not in the configuration file. Skipping to avoid possible errors`.
+
+If you want those movies to be moved by the script you can add another for it (the custom format doesn't need to exist). 
+
+### Example
+Assuming the example  `Config.txt` file, if receive the message `Current path /media/cool_movies from movie Deadpool (2016) is not in the configuration file. Skipping to avoid possible errors`, you can add a line for the new folder, such as:
+```ini
+[CustomFormatMappings]
+__default = /the/default/folder 
+custom_format1 = /custom/format/1/folder
+custom_format2 = /custom/format/2/folder
+whatever_you_want = /media/cool_movies
+```
+
 ## Requirements
 * Python 3.4 or greater
 * Radarr server

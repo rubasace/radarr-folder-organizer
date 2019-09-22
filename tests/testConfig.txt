@@ -1,0 +1,6 @@
+[Radarr]
+url = urlValue
+key = keyValue
+[CustomFormatMappings]
+__default = /default/folder
+custom_format1 = /custom/format/1/folder

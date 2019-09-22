@@ -46,6 +46,7 @@ docker run -d --name radarr-folder-organizer \
         -v /path/to/logs:/logs \
         -v /your/media/folder:/same/media/folder/as/radarr:shared \
         -e DELAY=15m \
+        -e LOG_LEVEL=INFO \
         rubasace/radarr-folder-organizer
 ```
 ## Unknown Folders
@@ -66,6 +67,9 @@ whatever_you_want = /media/cool_movies
 ## Requirements
 * Python 3.4 or greater
 * Radarr server
+
+## Troubleshooting
+Log level is set to INFO by default, with the bare minimum information logged. In case of an issue it's recommended to set the log level to DEBUG. Feel free to open an issue if something is not working as expected.
 
 ## Notes
 * Radarr Folder Organizer will try to move your files and abort the movie update if it can't, so it should have access to the movies library files.

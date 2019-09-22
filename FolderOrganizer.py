@@ -52,7 +52,7 @@ def decide_path(movie_info, format_mappings):
             if format_name in movie_custom_formats:
                 format_path = format_mappings[format_name]
                 logger.debug(
-                    'MATCHED FORMAT!! Movie "{}": format {} is in movie custom formats {}. Its correct path is {}!!'.format(
+                    'MATCHED FORMAT!! Movie "{}": format {} is in movie custom formats {}. Its correct path is {} !!'.format(
                         movie_title, format_name,
                         movie_custom_formats, format_path))
                 return format_path
@@ -62,9 +62,8 @@ def decide_path(movie_info, format_mappings):
                                                                                                movie_custom_formats))
     default_path = format_mappings[DEFAULT_MAPPING]
     logger.debug(
-        'NO MATCHED FORMAT!! Movie "{}": didn\'t match any format. Its correct path is {}!!'.format(
-            movie_title, format_name,
-            movie_custom_formats, default_path))
+        'NO MATCHED FORMAT!! Movie "{}": didn\'t match any format. Its correct path is {} !!'.format(
+            movie_title, default_path))
     return default_path
 
 
@@ -184,13 +183,13 @@ for movie in movies_json:
     normalized_current_path = normalize_path(current_path)
     if normalized_current_path not in custom_format_mappings.values():
         logger.warning(
-            'Movie "{}" current path is "{}", normalized as {} and is not in the configuration file. Skipping to avoid possible errors'.format(
+            'Movie "{}" current path is "{}", normalized as "{}" and is not in the configuration file. Skipping to avoid possible errors'.format(
                 title, movie['path'], normalized_current_path))
         continue
     correct_path = decide_path(movie, custom_format_mappings)
     if normalized_current_path != correct_path:
         logger.debug(
-            'Movie "{}" current path is "{}", normalized as {} and doesn\'t match the correct path "{}". Proceeding to move it'.format(
+            'Movie "{}" current path is "{}", normalized as "{}" and doesn\'t match the correct path "{}". Proceeding to move it'.format(
                 title, movie['path'], normalized_current_path, correct_path))
         move_movie(movie, current_path, correct_path)
     else:

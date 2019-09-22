@@ -8,7 +8,7 @@ import shutil
 
 import requests
 
-VER = '0.0.1'
+VER = '0.9.0'
 
 ID = "id"
 FOLDER_NAME = "folderName"
@@ -141,7 +141,7 @@ consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
 ########################################################################################################################
 
-logger.debug('CustomFormatSync Version {}'.format(VER))
+logger.info('CustomFormatSync Version {} Started!!'.format(VER))
 
 config_parser = configparser.ConfigParser()
 config_parser.optionxform = str

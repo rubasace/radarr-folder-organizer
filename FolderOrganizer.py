@@ -147,11 +147,7 @@ config_parser = configparser.ConfigParser()
 config_parser.optionxform = str
 
 # Loads an alternate config file so that I can work on my servers without uploading config to github
-if "DEV" in os.environ:
-    settingsFilename = os.path.join(os.getcwd(), 'dev/'
-                                                 'Config.txt')
-else:
-    settingsFilename = os.path.join(os.getcwd(), 'Config.txt')
+settingsFilename = os.path.join(os.getcwd(), 'Config.txt')
 config_parser.read(settingsFilename)
 
 radarr_url = config_section_map("Radarr")['url']

@@ -4,5 +4,5 @@
 while true
 do
 	python /FolderOrganizer.py
-	sleep $DELAY
+	sleep ${DELAY:-15m}
 done

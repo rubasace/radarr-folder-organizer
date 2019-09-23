@@ -22,9 +22,10 @@ custom_format1 = /custom/format/1/folder
 custom_format2 = /custom/format/2/folder
 ```
 ### Configuration steps
- 1. Edit the Config.txt file and replace your servers URL and API key for Radarr under the ``[Radarr]`` section.
- 2. Edit the Config.txt file and replace the ``__default`` mapping with the default folder for Radarr movies under the ``[Radarr]`` section (mandatory).
- 3. Edit the Config.txt file and add any other mapping for the custom formats just bellow the ``__default`` one, where the key is the custom format name (case sensitive) and the value is the desired folder for such format. Both key and value allow spaces.
+ 1. Copy the `Config.example.txt` file into `Config.txt` file under the same directory
+ 2. Edit the `Config.txt` file and replace your servers URL and API key for Radarr under the ``[Radarr]`` section.
+ 3. Edit the `Config.txt` file and replace the ``__default`` mapping with the default folder for Radarr movies under the ``[CustomFormatMappings]`` section (mandatory).
+ 4. Edit the `Config.txt` file and add any other mapping for the custom formats just bellow the ``__default`` one, where the key is the custom format name (case sensitive) and the value is the desired folder for such format. Both key and value allow spaces.
 
 ## How to Run
 ### Standalone

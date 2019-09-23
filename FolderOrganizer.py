@@ -8,7 +8,7 @@ import shutil
 
 import requests
 
-VER = '0.9.0'
+VER = '1.0.0'
 
 ID = "id"
 FOLDER_NAME = "folderName"
@@ -21,6 +21,10 @@ IMPORTED_EVENT_TYPE = "downloadFolderImported"
 GRABBED_EVENT_TYPE = "grabbed"
 DOWNLOAD_ID = "downloadId"
 EVENT_TYPE = "eventType"
+
+# Flags
+MOVE_DEFAULT_FLAG = 'MOVE_DEFAULT'
+LOG_LEVEL = "LOG_LEVEL"
 
 
 def config_section_map(section):
@@ -57,14 +61,20 @@ def decide_path(movie_info, format_mappings):
                         movie_custom_formats, format_path))
                 return format_path
             else:
-                logger.debug('Movie "{}": format {} is not in movie custom formats {}. Checking other potential formats'.format(movie_title,
-                                                                                               format_name,
-                                                                                               movie_custom_formats))
-    default_path = format_mappings[DEFAULT_MAPPING]
-    logger.debug(
-        'NO MATCHED FORMAT!! Movie "{}": didn\'t match any format. Its correct path is {} !!'.format(
-            movie_title, default_path))
-    return default_path
+                logger.debug(
+                    'Movie "{}": format {} is not in movie custom formats {}. Checking other potential formats'.format(
+                        movie_title,
+                        format_name,
+                        movie_custom_formats))
+    if should_move_default:
+        default_path = format_mappings[DEFAULT_MAPPING]
+        logger.debug(
+            'NO MATCHED FORMAT!! Movie "{}": didn\'t match any mapped format. {} flag value is enabled so its correct path is {} !!'.format(
+                movie_title, MOVE_DEFAULT_FLAG, default_path))
+        return default_path
+    logger.debug('NO MATCHED FORMAT!! Movie "{}": didn\'t match any mapped format. {} flag value is disabled so no new path is assigned !!'.format(
+            movie_title, MOVE_DEFAULT_FLAG))
+    return None
 
 
 def get_current_path(movie_info):
@@ -127,7 +137,7 @@ def refresh_movie(movie_info):
 
 ########################################################################################################################
 logger = logging.getLogger()
-log_level = os.getenv("LOG_LEVEL", "INFO")
+log_level = os.getenv(LOG_LEVEL, "INFO")
 logger.setLevel(log_level)
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
 
@@ -171,6 +181,7 @@ if radarrMovies.status_code >= 300:
 
 movies_json = radarrMovies.json()
 logger.info('Received {} movies from Radarr'.format(len(movies_json)))
+should_move_default = os.getenv(MOVE_DEFAULT_FLAG, 'false').lower() == 'true'
 for movie in movies_json:
     title = movie["title"]
     logger.debug('########## Started processing movie: {} ##########'.format(title))
@@ -183,6 +194,10 @@ for movie in movies_json:
                 title, movie['path'], normalized_current_path))
         continue
     correct_path = decide_path(movie, custom_format_mappings)
+    if correct_path is None:
+        logger.debug('Movie "{}" current path is "{}", correct path is not assigned (no custom format with a customized mapping). Skipping'.format(
+                title, movie['path']))
+        continue
     if normalized_current_path != correct_path:
         logger.debug(
             'Movie "{}" current path is "{}", normalized as "{}" and doesn\'t match the correct path "{}". Proceeding to move it'.format(

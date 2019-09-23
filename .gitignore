@@ -112,3 +112,5 @@ dev/**
 
 logs/
 logs/*
+
+Config.txt

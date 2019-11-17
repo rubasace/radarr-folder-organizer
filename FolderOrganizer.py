@@ -151,7 +151,7 @@ consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
 ########################################################################################################################
 
-logger.info('CustomFormatSync Version {} Started!!'.format(VER))
+logger.info('RadarrFolderOrganizer Version {} Started!!'.format(VER))
 
 config_parser = configparser.ConfigParser()
 config_parser.optionxform = str

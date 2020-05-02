@@ -159,9 +159,14 @@ config_parser.optionxform = str
 # Loads an alternate config file so that I can work on my servers without uploading config to github
 settingsFilename = os.path.join(os.getcwd(), 'Config.txt')
 config_parser.read(settingsFilename)
+radarr_url = os.getenv("RADARR_URL")
+radarr_key = os.getenv("RADARR_KEY")
 
-radarr_url = config_section_map("Radarr")['url']
-radarr_key = config_section_map("Radarr")['key']
+if radarr_url is None:
+    radarr_url = config_section_map("Radarr")['url']
+
+if radarr_key is None:
+    radarr_key = config_section_map("Radarr")['key']
 
 # We normalize the path to avoid case inconsistencies when checking the mappings
 custom_format_mappings = {key: normalize_path(value) for (key, value) in

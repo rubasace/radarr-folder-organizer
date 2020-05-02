@@ -59,10 +59,14 @@ docker run -d --name radarr-folder-organizer \
 | ---- | ---- | ----------- | -------- |
 | LOG_LEVEL | `INFO`  | Level that the logger will use. Can be set to DEBUG for troubleshooting. | &nbsp; |
 | MOVE_DEFAULT | `False`  | If `true` files that don't match any custom mapping will be moved to the `__default` folder. **This can mess up your folders** if you manually organized files that don't have custom formats.  | &nbsp; |
-| DELAY | `15m`  | Argument passed to the `sleep` command between executions of the script. **Only used if running via docker** | &nbsp; |
+| DELAY* | `15m`  | Argument passed to the `sleep` command between executions of the script. **Only used if running via docker** | &nbsp; |
 | RADARR_URL | None  | Alternative way of passing the radarr url (has precedence over config file) | &nbsp; |
 | RADARR_KEY | None  | Alternative way of passing the radarr password (has precedence over config file) | &nbsp; |
 
+### Avoid looping in Docker
+
+By default, the Docker entrypoint will keep the script looping every 15m (or the configured interval). This behaviour might not be the desired one if the image is run as part of a cronjob (for example, via Kubernetes). 
+In that case, a value of `DISABLED` can be passed to the environment variable `DELAY`, causing the script to just execute once and exit.
 ## Unknown Folders
 This script will only affect movies that are located in folders explicitly included in the `Config.txt`. In case any movie is found in another folder you'll receive the message `Current path ${Path} from movie ${MovieName} is not in the configuration file. Skipping to avoid possible errors`.
 

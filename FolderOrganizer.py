@@ -5,6 +5,7 @@ import os
 import pathlib
 import sys
 import shutil
+import time
 
 import requests
 
@@ -103,6 +104,8 @@ def move_movie(movie_info, current_path, correct_path):
             logger.debug(
                 'Movie "{}" has no files. Just updating Radarr (no files to move)'.format(title, old_path, new_path))
         change_movie_path_and_folder(movie_info, new_path, new_folder_name)
+        logger.debug("Going to refresh movie {} twice, so Radarr picks up the changes to the folder".format(title))
+        refresh_movie(movie_info)
         refresh_movie(movie_info)
     except Exception as e:
         logger.error("Couldn't move movie {}; Exception: {}".format(movie_title, e))
@@ -125,14 +128,17 @@ def change_movie_path_and_folder(movie_info, new_path, new_folder_name):
 
 def refresh_movie(movie_info):
     movie_id = movie_info[ID]
-    title = movie_info["title"]
+    movie_title = movie_info["title"]
     command = {"movieId": movie_id, "name": "refreshMovie"}
+    sleep_time = 10
+    logger.debug("Waiting {}s before refreshing movie {}, so Radarr has enough time to get the change".format(sleep_time, movie_title))
+    time.sleep(sleep_time)
     refresh_response = radarrSession.post("{0}/api/command".format(radarr_url),
                                           data=json.dumps(command))
     if refresh_response.status_code < 300:
-        logger.debug("Movie {} refreshed succesfully".format(title))
+        logger.debug("Movie {} refreshed succesfully".format(movie_title))
     else:
-        logger.error("Error while refreshing movie: {}".format(title))
+        logger.error("Error while refreshing movie: {}".format(movie_title))
 
 
 ########################################################################################################################

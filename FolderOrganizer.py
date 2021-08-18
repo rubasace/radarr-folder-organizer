@@ -41,15 +41,25 @@ def config_section_map(section):
             dict1[option] = None
     return dict1
 
-
-def get_custom_format_names(movie_info):
-    if "movieFile" not in movie_info.keys():
-        return list()
+def get_v2_custom_format_names(movie_info):
     return list(map(lambda e: e["name"], movie_info["movieFile"]["quality"]["customFormats"]))
 
+def get_custom_format_names(movie_info, isLegacyV2):
+    if "movieFile" not in movie_info.keys():
+        return list()
+    if isLegacyV2:
+        return get_v2_custom_format_names(movie_info)
+    movieFileId = movie_info["movieFile"]["id"]
+    movieFileResponse = radarrSession.get('{0}/api/v3/movieFile/{1}'.format(radarr_url, movieFileId))
+    if movieFileResponse.status_code >= 300:
+        logger.error('Movie file retrieval for movie {} returned status code {}'.format(movie_info['title'], radarrMovies.status_code))
+        sys.exit(0)
+    movieFile = movieFileResponse.json()
+    return list(map(lambda e: e["name"], movieFile["customFormats"]))
 
-def decide_path(movie_info, format_mappings):
-    movie_custom_formats = get_custom_format_names(movie_info)
+
+def decide_path(movie_info, format_mappings, isLegacyV2):
+    movie_custom_formats = get_custom_format_names(movie_info, isLegacyV2)
     movie_title = movie_info['title']
     logger.debug('Movie "{}" has custom formats: {}'.format(movie_title, movie_custom_formats))
     if len(movie_custom_formats) > 0:
@@ -73,7 +83,8 @@ def decide_path(movie_info, format_mappings):
             'NO MATCHED FORMAT!! Movie "{}": didn\'t match any mapped format. {} flag value is enabled so its correct path is {} !!'.format(
                 movie_title, MOVE_DEFAULT_FLAG, default_path))
         return default_path
-    logger.debug('NO MATCHED FORMAT!! Movie "{}": didn\'t match any mapped format. {} flag value is disabled so no new path is assigned !!'.format(
+    logger.debug(
+        'NO MATCHED FORMAT!! Movie "{}": didn\'t match any mapped format. {} flag value is disabled so no new path is assigned !!'.format(
             movie_title, MOVE_DEFAULT_FLAG))
     return None
 
@@ -131,7 +142,9 @@ def refresh_movie(movie_info):
     movie_title = movie_info["title"]
     command = {"movieId": movie_id, "name": "refreshMovie"}
     sleep_time = 10
-    logger.debug("Waiting {}s before refreshing movie {}, so Radarr has enough time to get the change".format(sleep_time, movie_title))
+    logger.debug(
+        "Waiting {}s before refreshing movie {}, so Radarr has enough time to get the change".format(sleep_time,
+                                                                                                     movie_title))
     time.sleep(sleep_time)
     refresh_response = radarrSession.post("{0}/api/command".format(radarr_url),
                                           data=json.dumps(command))
@@ -185,6 +198,14 @@ radarrSession = requests.Session()
 radarrSession.headers.update({'x-api-key': radarr_key})
 # TODO check if needed
 radarrSession.trust_env = False
+radarrStatus = radarrSession.get('{0}/api/system/status'.format(radarr_url))
+status_json = radarrStatus.json()
+version = status_json['version']
+logger.info('Connected to radarr at version {}'.format(version))
+isLegacyV2 = version[0] == '2'
+if radarrStatus.status_code >= 300:
+    logger.error('Status retrieve returned status code {}'.format(radarrStatus.status_code))
+    sys.exit(0)
 radarrMovies = radarrSession.get('{0}/api/movie'.format(radarr_url))
 if radarrMovies.status_code >= 300:
     logger.error('Movies retrieve returned status code {}'.format(radarrMovies.status_code))
@@ -204,9 +225,10 @@ for movie in movies_json:
             'Movie "{}" current path is "{}", normalized as "{}" and is not in the configuration file. Skipping to avoid possible errors'.format(
                 title, movie['path'], normalized_current_path))
         continue
-    correct_path = decide_path(movie, custom_format_mappings)
+    correct_path = decide_path(movie, custom_format_mappings, isLegacyV2)
     if correct_path is None:
-        logger.debug('Movie "{}" current path is "{}", correct path is not assigned (no custom format with a customized mapping). Skipping'.format(
+        logger.debug(
+            'Movie "{}" current path is "{}", correct path is not assigned (no custom format with a customized mapping). Skipping'.format(
                 title, movie['path']))
         continue
     if normalized_current_path != correct_path:

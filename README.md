@@ -84,7 +84,7 @@ whatever_you_want = /media/cool_movies
 
 ## Requirements
 * Python 3.4 or greater
-* Radarr server
+* Radarr server v2 or v3
 
 ## Troubleshooting
 Log level is set to INFO by default, with the bare minimum information logged. In case of an issue it's recommended to set the log level to DEBUG. Feel free to open an issue if something is not working as expected.

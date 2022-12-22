@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: configparser
+    versions:
+    - 5.0.1
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
